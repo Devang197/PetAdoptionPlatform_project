@@ -21,7 +21,7 @@ class InteractionDAOImpl implements IInteractionDAO {
             stmt.setTimestamp(4, interaction.getTimestamp());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while adding interaction " + e.getMessage());
+            System.out.println("Error while adding interaction: " + e.getMessage());
         }
     }
 
@@ -36,7 +36,7 @@ class InteractionDAOImpl implements IInteractionDAO {
             stmt.setInt(5, interaction.getInteractionId());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while adding interaction " + e.getMessage());
+            System.out.println("Error while updating interaction: " + e.getMessage());
         }
     }
 
@@ -47,7 +47,7 @@ class InteractionDAOImpl implements IInteractionDAO {
             stmt.setInt(1, interactionId);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while adding interaction " + e.getMessage());
+            System.out.println("Error while deleting interaction: " + e.getMessage());
         }
     }
 
@@ -68,13 +68,30 @@ class InteractionDAOImpl implements IInteractionDAO {
                 return interaction;
             }
         } catch (SQLException e) {
-            System.out.println("Error while adding interaction " + e.getMessage());
+            System.out.println("Error while retrieving interaction: " + e.getMessage());
         }
         return null;
     }
 
     @Override
     public List<Interaction> getAllInteractions() {
-        return List.of();
+        List<Interaction> interactions = new ArrayList<>();
+        String sql = "SELECT * FROM Interactions"; // Example SQL to select all interactions
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Interaction interaction = new Interaction();
+                interaction.setInteractionId(rs.getInt("interaction_id"));
+                interaction.setShelterId(rs.getInt("shelter_id"));
+                interaction.setAdopterId(rs.getInt("adopter_id"));
+                interaction.setMessage(rs.getString("message"));
+                interaction.setTimestamp(rs.getTimestamp("timestamp"));
+                interactions.add(interaction); // Add interaction to the list
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while retrieving interactions: " + e.getMessage());
+        }
+        return interactions;
     }
 }

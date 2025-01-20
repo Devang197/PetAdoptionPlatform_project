@@ -3,7 +3,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 interface IUserDAO {
-        void addUser(User user);
+        boolean addUser(User user);
         void updateUser(User user);
         void deleteUser(int userId);
         User getUserById(int userId);

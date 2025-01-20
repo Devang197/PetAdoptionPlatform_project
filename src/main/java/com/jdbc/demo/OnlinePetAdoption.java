@@ -226,16 +226,39 @@ public class OnlinePetAdoption {
             userDAO.addUser(user);
             System.out.println("User added successfully!");
 
-            /*/ Fetch the created user
-            User fetchedUser = userDAO.getUserById(1);
-            System.out.println("Fetched User: " + fetchedUser.getName());
 
-            // Update user info
-            fetchedUser.setName("John Doe Updated");
-            userDAO.updateUser(fetchedUser);
 
-            // Delete user
-            userDAO.deleteUser(fetchedUser.getUserId());*/
+            PetDAOImpl petDAO = new PetDAOImpl(conn);
+            Pet newPet = new Pet();
+            
+            newPet.setShelterId(1); // Assume this shelter ID exists in the Users table
+            newPet.setName("Fluffy");
+            newPet.setBreed("Golden Retriever");
+            newPet.setAge(3);
+            newPet.setStatus("Available");
+
+            petDAO.addPet(newPet);
+            System.out.println("Pet added successfully!");
+
+            ApplicationDAOImpl applicationDAO = new ApplicationDAOImpl(conn);
+            Application newApplication = new Application();
+
+            newApplication.setApplicationId(1);
+            newApplication.setAdopterId(1); // Assume this adopter ID exists
+            newApplication.setPetId(1); // Assume this pet ID exists
+            newApplication.setStatus("Pending");
+
+            applicationDAO.addApplication(newApplication);
+            System.out.println("Application added successfully!");
+
+            InteractionDAOImpl interactionDAO = new InteractionDAOImpl(conn);
+            Interaction newInteraction = new Interaction();
+            newInteraction.setShelterId(1); // Assume this shelter ID exists
+            newInteraction.setAdopterId(1); // Assume this adopter ID exists
+            newInteraction.setMessage("Hello, we are reviewing your application.");
+
+            interactionDAO.addInteraction(newInteraction);
+            System.out.println("Interaction added successfully!");
 
         } catch (SQLException e){
             System.out.println("Error while interacting with database " + e.getMessage());

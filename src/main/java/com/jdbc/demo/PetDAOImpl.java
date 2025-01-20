@@ -22,7 +22,11 @@ class PetDAOImpl implements IPetDAO {
             stmt.setString(5, pet.getStatus());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while adding pets " + e.getMessage());
+            if (e.getSQLState().equals("23000")) { // SQLState for foreign key constraint violation
+                System.out.println("Error: Invalid Shelter ID. Please ensure the shelter exists. " + e.getMessage());
+            } else {
+                System.out.println("Error while adding pet: " + e.getMessage());
+            }
         }
     }
 
@@ -38,7 +42,11 @@ class PetDAOImpl implements IPetDAO {
             stmt.setInt(6, pet.getPetId());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while adding pets " + e.getMessage());
+            if (e.getSQLState().equals("23000")) { // SQLState for foreign key constraint violation
+                System.out.println("Error: Invalid Shelter ID. Please ensure the shelter exists. " + e.getMessage());
+            } else {
+                System.out.println("Error while updating pet: " + e.getMessage());
+            }
         }
     }
 
@@ -49,7 +57,7 @@ class PetDAOImpl implements IPetDAO {
             stmt.setInt(1, petId);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while adding pets " + e.getMessage());
+            System.out.println("Error while deleting pet: " + e.getMessage());
         }
     }
 
@@ -70,7 +78,7 @@ class PetDAOImpl implements IPetDAO {
                 return pet;
             }
         } catch (SQLException e) {
-            System.out.println("Error while adding pets " + e.getMessage());
+            System.out.println("Error while retrieving pet by ID: " + e.getMessage());
         }
         return null;
     }
@@ -92,9 +100,8 @@ class PetDAOImpl implements IPetDAO {
                 pets.add(pet);
             }
         } catch (SQLException e) {
-            System.out.println("Error while adding pets " + e.getMessage());
+            System.out.println("Error while retrieving all pets: " + e.getMessage());
         }
         return pets;
     }
 }
-

@@ -13,15 +13,26 @@ class ApplicationDAOImpl implements IApplicationDAO {
 
     @Override
     public void addApplication(Application application) {
-        String sql = "INSERT INTO Applications (adopter_id, pet_id, status, application_date) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, application.getAdopterId());
-            stmt.setInt(2, application.getPetId());
-            stmt.setString(3, application.getStatus());
-            stmt.setTimestamp(4, application.getApplicationDate());
-            stmt.executeUpdate();
+        String checkAdopterSql = "SELECT COUNT(*) FROM Users WHERE user_id = ?";
+        try (PreparedStatement checkStmt = conn.prepareStatement(checkAdopterSql)) {
+            checkStmt.setInt(1, application.getAdopterId());
+            ResultSet rs = checkStmt.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+            String sql = "INSERT INTO Applications (adopter_id, pet_id, status, application_date) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, application.getAdopterId());
+                stmt.setInt(2, application.getPetId());
+                stmt.setString(3, application.getStatus());
+                stmt.setTimestamp(4, application.getApplicationDate());
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                System.out.println("Error while adding application " + e.getMessage());
+            }
+            } else {
+                System.out.println("Adopter ID does not exist in Users table.");
+            }
         } catch (SQLException e) {
-            System.out.println("Error while adding application " + e.getMessage());
+            System.out.println("Error while checking adopter: " + e.getMessage());
         }
     }
 

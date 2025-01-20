@@ -1,5 +1,6 @@
 package com.jdbc.demo;
 
+import java.sql.SQLException;
 import java.util.List;
 
 interface IInteractionDAO {
@@ -7,5 +8,5 @@ interface IInteractionDAO {
     void updateInteraction(Interaction interaction);
     void deleteInteraction(int interactionId);
     Interaction getInteractionById(int interactionId);
-    List<Interaction> getAllInteractions();
+    List<Interaction> getAllInteractions() throws SQLException;
 }

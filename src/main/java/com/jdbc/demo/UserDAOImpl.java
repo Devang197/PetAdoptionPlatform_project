@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 class UserDAOImpl implements IUserDAO {
     private final Connection conn;
 
@@ -13,24 +12,24 @@ class UserDAOImpl implements IUserDAO {
     }
 
     @Override
-    public void addUser(User user) {
+    public boolean addUser(User user) {
         String sql = "INSERT INTO Users (name, email, password, role) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, user.getName());
             stmt.setString(2, user.getEmail());
             stmt.setString(3, user.getPassword());
             stmt.setString(4, user.getRole());
-            stmt.executeUpdate();
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println("Error while adding user " + e.getMessage());
+            System.out.println("Error while adding user: " + e.getMessage());
         }
+		return false;
     }
-
-
 
     @Override
     public void updateUser(User user) {
-        String sql = "UPDATE Users SET name = ?, email = ?, password = ?, role = ? WHERE user_id = ?";
+    	String sql = "UPDATE Users SET name = ?, email = ?, password = ?, role = ? WHERE user_id = ?";
+
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, user.getName());
             stmt.setString(2, user.getEmail());
@@ -39,7 +38,7 @@ class UserDAOImpl implements IUserDAO {
             stmt.setInt(5, user.getUserId());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while adding user " + e.getMessage());
+            System.out.println("Error while updating user: " + e.getMessage());
         }
     }
 
@@ -50,7 +49,7 @@ class UserDAOImpl implements IUserDAO {
             stmt.setInt(1, userId);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error while adding user " + e.getMessage());
+            System.out.println("Error while deleting user: " + e.getMessage());
         }
     }
 
@@ -70,7 +69,7 @@ class UserDAOImpl implements IUserDAO {
                 return user;
             }
         } catch (SQLException e) {
-            System.out.println("Error while adding user " + e.getMessage());
+            System.out.println("Error while retrieving user: " + e.getMessage());
         }
         return null;
     }
@@ -91,7 +90,7 @@ class UserDAOImpl implements IUserDAO {
                 users.add(user);
             }
         } catch (SQLException e) {
-            System.out.println("Error while adding user " + e.getMessage());
+            System.out.println("Error while retrieving users: " + e.getMessage());
         }
         return users;
     }
